@@ -48,7 +48,6 @@ def select_xiaoniaofei_gu_just_for_view():
 if __name__=='__main__':
     t1 = t1 = threading.Thread(target=heart_beat,args=(u'heartbeat',))
     t1.start()
-    tdx = TdxOperator.TdxOperator()
 
     while 1:
         
@@ -56,7 +55,7 @@ if __name__=='__main__':
             select_xiaoniaofei_gu_just_for_view()
             time.sleep(10 * 60)
 
-        elif int(time.strftime("%H%M%S")) > 113000:
+        elif int(time.strftime("%H%M%S")) > 130000:
             select_strong_gu_and_red_on_one_minute()
             time.sleep(5 * 60)
 

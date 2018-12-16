@@ -148,7 +148,7 @@ class TdxOperator():
                 time.sleep(1)
                 if win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Static','选股完毕. ') != 0:
                     win32gui.PostMessage(win32gui.FindWindow('#32770','条件选股'),win32con.WM_CLOSE,0,0)
-                    # time.sleep(1)
+                    time.sleep(1)
                     print("选股完毕")
                     break
         except Exception as e:
