@@ -21,7 +21,11 @@ class WebChatManager(Singleton):
         self.bot = Bot(True, False)
      
     def send_image_to_group(self, msg, filepath):
-        group = self.bot.groups().search('欢乐股')[0]
+        groups = self.bot.groups()
+        for group in groups:
+            print(group)
+
+        group = self.bot.groups().search('欢乐A')[0]
         print("进行自动发送选股截图！")
         print(group)
         group.send(msg)

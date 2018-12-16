@@ -41,7 +41,7 @@ class TdxOperator():
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
             time.sleep(1)
             win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','通达信金融终端V7.42'),None,'Button','登录'),win32con.BM_CLICK,0,0)
-            time.sleep(5)
+            time.sleep(3)
             
             ads_handle = win32gui.FindWindow('#32770','通达信信息')
             print(ads_handle)
@@ -66,7 +66,7 @@ class TdxOperator():
             win32api.keybd_event(84,0,0,0)#t键位码是84
             win32api.keybd_event(84,0,win32con.KEYEVENTF_KEYUP,0)#释放按键
             win32api.keybd_event(17,0,win32con.KEYEVENTF_KEYUP,0)
-            time.sleep(3)
+            time.sleep(1)
             #win32gui.SendMessage(Tab_handle,0x130C,1,0)
         except Exception as e:
             self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
@@ -85,8 +85,22 @@ class TdxOperator():
             win32gui.SendMessage(gs,win32con.WM_SETFOCUS,0,0)#选中按钮
             time.sleep(1)
             win32gui.SendMessage(gs,win32con.WM_KEYDOWN,0,0)#模拟按下指定键
-            time.sleep(1)
             win32gui.SendMessage(gs,win32con.WM_KEYUP,0,0) 
+            time.sleep(1)
+        except Exception as e:
+            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+
+
+   #按索引选择公式
+    def ImportCase(self):
+        try:
+            #tjxg = win32gui.FindWindow('#32770','条件选股')
+            yrfa = win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Button','引入方案')
+            win32gui.PostMessage(yrfa,win32con.BM_CLICK,0,0)
+            time.sleep(1)
+
+            fawj = win32gui.FindWindowEx(win32gui.FindWindow('#32770','选择选股方案文件'),None,'Button','确定')
+            win32gui.PostMessage(fawj,win32con.BM_CLICK,0,0)
             time.sleep(1)
         except Exception as e:
             self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
@@ -96,7 +110,7 @@ class TdxOperator():
         try:
             #time.sleep(5)
             win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Button','加入条件'),win32con.BM_CLICK,0,0)
-            time.sleep(3)
+            time.sleep(1)
         except Exception as e:
             self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
 
@@ -117,7 +131,7 @@ class TdxOperator():
     #补数据
     def Complement_data(self):
         try:
-            time.sleep(3)
+            time.sleep(1)
             if win32gui.FindWindowEx(win32gui.FindWindow('#32770','TdxW'),None,'Button','是(&Y)') != 0:
                 win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','TdxW'),None,'Button','是(&Y)'),win32con.BM_CLICK,0,0)
                 time.sleep(5)
@@ -134,7 +148,7 @@ class TdxOperator():
                 time.sleep(1)
                 if win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Static','选股完毕. ') != 0:
                     win32gui.PostMessage(win32gui.FindWindow('#32770','条件选股'),win32con.WM_CLOSE,0,0)
-                    time.sleep(1)
+                    # time.sleep(1)
                     print("选股完毕")
                     break
         except Exception as e:
@@ -158,6 +172,13 @@ class TdxOperator():
         self.Ctrl_T()
         self.Stock_option(index)
         self.Join_condition()
+        self.begin_select_stocks()
+        self.Complement_data()
+        self.CloseSelectStockWindows()
+
+    def DoImportSelectStockCase(self, index):
+        self.Ctrl_T()
+        self.ImportCase()
         self.begin_select_stocks()
         self.Complement_data()
         self.CloseSelectStockWindows()
