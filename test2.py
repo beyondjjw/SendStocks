@@ -30,7 +30,7 @@ if __name__=='__main__':
         
         if int(time.strftime("%H%M%S")) >= 93000:
             
-            tdx.GetReadyForSelect()
+            tdx.OpenTdxForReady()
             index = 88
             indexName= "近期强势股,请看看低吸机会，找1分钟信号线是否变红，不要追高"
             imageName = "C:\\code\\pic\\qianshigu.jpg"

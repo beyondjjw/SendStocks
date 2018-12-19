@@ -1,75 +1,78 @@
-#coding=utf-8
- 
-__author__ = 'Administrator'
- 
-__doc__ = '''
-pythonwin中win32gui的用法
-本文件演如何使用win32gui来遍历系统中所有的顶层窗口，
-并遍历所有顶层窗口中的子窗口
-'''
- 
 import win32gui
-from pprint import pprint
+import win32con
+import time
+import win32api
+import datetime
+import Mouse
+import KeyBoardMgr
+import TdxController
+
+
+def reset_window_pos(targetTitle):  
+    hWndList = []  
+    win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), hWndList)  
+    for hwnd in hWndList:
+        clsname = win32gui.GetClassName(hwnd)
+        title = win32gui.GetWindowText(hwnd)
+        print(clsname)
+        print(title)
+
+        if clsname == 'CFQS_SwitchEx':
+            print("hello world " + clsname)
+            break
+
+def get_child_windows(parent):        
+    '''     
+    获得parent的所有子窗口句柄
+     返回子窗口句柄列表
+     '''     
+    if not parent:         
+        return      
+    hwndChildList = []     
+    win32gui.EnumChildWindows(parent, lambda hwnd, param: param.append(hwnd),  hwndChildList)          
+    return hwndChildList 
+
+
+def find_idxSubHandle(pHandle, winClass, index=0):
+    """
+    已知子窗口的窗体类名
+    寻找第index号个同类型的兄弟窗口
+    """
+    assert type(index) == int and index >= 0
+    handle = win32gui.FindWindowEx(pHandle, 0, winClass, None)
+    while index > 0:
+        handle = win32gui.FindWindowEx(pHandle, handle, winClass, None)
+        print(hex(handle))
+        index -= 1
+    return handle
+
+def find_subHandle(pHandle, winClassList):
+    """
+    递归寻找子窗口的句柄
+    pHandle是祖父窗口的句柄
+    winClassList是各个子窗口的class列表，父辈的list-index小于子辈
+    """
+    assert type(winClassList) == list
+    if len(winClassList) == 1:
+        return find_idxSubHandle(pHandle, winClassList[0][0], winClassList[0][1])
+    else:
+        pHandle = find_idxSubHandle(pHandle, winClassList[0][0], winClassList[0][1])
+        return find_subHandle(pHandle, winClassList[1:])
+
+
+        
+
+
+# csw = TdxController.ConditionSelectStocksWindow()
+# result = csw.GetNumberSelected()
+# print(result)
+
+# Mouse.Click(200, 400)
+# KeyBoardMgr.key_input_key('esc')
+
+
+
+
  
-def gbk2utf8(s):
-    return s.decode('gb2312').encode('utf-8')
- 
-def show_window_attr(hWnd):
-    '''
-    显示窗口的属性
-    :return:
-    '''
-    if not hWnd:
-        return
- 
-    #中文系统默认title是gb2312的编码
-    title = win32gui.GetWindowText(hWnd)
-    # title = gbk2utf8(title)
-    clsname = win32gui.GetClassName(hWnd)
- 
-    print ('窗口句柄:%s ' % (hWnd))
-    print ('窗口标题:%s' % (title))
-    print ('窗口类名:%s' % (clsname))
-    print ('')
- 
-def show_windows(hWndList):
-    for h in hWndList:
-        show_window_attr(h)
- 
-def demo_top_windows():
-    '''
-    演示如何列出所有的顶级窗口
-    :return:
-    '''
-    hWndList = []
-    win32gui.EnumWindows(lambda hWnd, param: param.append(hWnd), hWndList)
-    show_windows(hWndList)
- 
-    return hWndList
- 
-def demo_child_windows(parent):
-    '''
-    演示如何列出所有的子窗口
-    :return:
-    '''
-    if not parent:
-        return
- 
-    hWndChildList = []
-    win32gui.EnumChildWindows(parent, lambda hWnd, param: param.append(hWnd),  hWndChildList)
-    show_windows(hWndChildList)
-    return hWndChildList
- 
- 
-hWndList = demo_top_windows()
-assert len(hWndList)
- 
-parent = hWndList[20]
-#这里系统的窗口好像不能直接遍历，不知道是否是权限的问题
-hWndChildList = demo_child_windows(parent)
- 
-print('-----top windows-----')
-pprint(hWndList)
- 
-print('-----sub windows:from %s------' % (parent))
-pprint(hWndChildList)
+
+

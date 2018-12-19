@@ -14,7 +14,51 @@ import os
 import threading
 import TdxOperator
 
+import TdxController
+import Mouse
+import KeyBoardMgr
+
 webchat = WebChatMgr.WebChatManager()
+
+def ShowMultiTimeWindows(number):
+    index = 0
+    while index < number:
+        tmpStock = TdxController.tempStocks()
+        left, top = tmpStock.GetTempSocktWindowPos()
+
+        # x, y = tmpStock.GetFirstStockPosition()
+        # Mouse.DoubleClick(x, y)
+
+        x, y = tmpStock.GetStockPosByIndex(index)
+        Mouse.DoubleClick(x, y)    
+
+        time.sleep(1)
+
+        steps = 0
+        timeCtller = TdxController.TimeController(left, top)
+        x, y = timeCtller.GetOneMinutePos()
+        Mouse.Click(x, y)
+        steps += 1
+
+        time.sleep(1)
+        x, y = timeCtller.GetMutiTimePos()
+        Mouse.Click(x, y)
+        steps += 1
+
+        time.sleep(2)
+
+        imageName = "C:\\code\\pic\\tmp.jpg"
+        Capture.window_capture(imageName)
+        webchat.send_image_to_group("详细走势", imageName)
+        
+        
+        while steps > 0:
+            KeyBoardMgr.key_input_key('esc')
+            steps -= 1
+        
+        index += 1
+
+
 
 def heart_beat(str):
     chat = WebChatMgr.WebChatManager()
@@ -23,22 +67,23 @@ def heart_beat(str):
 
 def select_strong_gu_and_red_on_one_minute():
     tdx = TdxOperator.TdxOperator()
-    tdx.GetReadyForSelect()
+    tdx.OpenTdxForReady()
     msg = "近期强势，今天1分钟信号线已经变红，注意是否是1分钟一买位置附近刚变红"
     imageName = "C:\\code\\pic\\qianshigu.jpg"
-    tdx.DoImportSelectStockCase(1)
+    result = tdx.DoImportSelectStockCase(2)
     Capture.window_capture(imageName)
     webchat.send_image_to_group(msg, imageName)
-    webchat.send_image_by_file_helper(msg, imageName)
+    ShowMultiTimeWindows(result)
+    # webchat.send_image_by_file_helper(msg, imageName)
     tdx.KillSelf()
 
 def select_xiaoniaofei_gu_just_for_view():
     tdx = TdxOperator.TdxOperator()
-    tdx.GetReadyForSelect()
+    tdx.OpenTdxForReady()
     index = 87
-    indexName= "每日小鸟飞选股,多看少动，一般有新的风口启动"
+    indexName= "每日小鸟飞选股,多看少动，一般对应30分钟3买，可能新风口启动"
     imageName = "C:\\code\\pic\\xiaoniaofei.jpg"
-    tdx.DoSelectStocksNow(index, imageName)
+    result = tdx.DoSelectStocksNow(index, imageName)
     Capture.window_capture(imageName)
     webchat.send_image_to_group(indexName, imageName)
     webchat.send_image_by_file_helper(indexName, imageName)
@@ -51,13 +96,22 @@ if __name__=='__main__':
 
     while 1:
         
-        if int(time.strftime("%H%M%S")) >= 93000 and int(time.strftime("%H%M%S")) <= 113000:
-            select_xiaoniaofei_gu_just_for_view()
-            time.sleep(10 * 60)
-
-        elif int(time.strftime("%H%M%S")) > 130000:
+        if int(time.strftime("%H%M%S")) >= 93000 :
+            # select_xiaoniaofei_gu_just_for_view()
+            # time.sleep(5 * 60)
             select_strong_gu_and_red_on_one_minute()
+            time.sleep(1)
+
             time.sleep(5 * 60)
+
+            tdx = TdxOperator.TdxOperator()
+            tdx.DoUpdateRetimeData()
+
+            
+
+        # elif int(time.strftime("%H%M%S")) > 130000:
+            # select_strong_gu_and_red_on_one_minute()
+            # time.sleep(5 * 60)
 
         else:
             print("time to sleep")

@@ -12,6 +12,33 @@ import WebChatMgr
 import os
 import threading
 
+
+def find_idxSubHandle(pHandle, winClass, index=0):
+    """
+    已知子窗口的窗体类名
+    寻找第index号个同类型的兄弟窗口
+    """
+    assert type(index) == int and index >= 0
+    handle = win32gui.FindWindowEx(pHandle, 0, winClass, None)
+    while index > 0:
+        handle = win32gui.FindWindowEx(pHandle, handle, winClass, None)
+        print(hex(handle))
+        index -= 1
+    return handle
+
+def find_subHandle(pHandle, winClassList):
+    """
+    递归寻找子窗口的句柄
+    pHandle是祖父窗口的句柄
+    winClassList是各个子窗口的class列表，父辈的list-index小于子辈
+    """
+    assert type(winClassList) == list
+    if len(winClassList) == 1:
+        return find_idxSubHandle(pHandle, winClassList[0][0], winClassList[0][1])
+    else:
+        pHandle = find_idxSubHandle(pHandle, winClassList[0][0], winClassList[0][1])
+        return find_subHandle(pHandle, winClassList[1:])
+
 class TdxOperator():
     def __init__(self):
         self.webchat=WebChatMgr.WebChatManager()
@@ -41,14 +68,14 @@ class TdxOperator():
             win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
             time.sleep(1)
             win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','通达信金融终端V7.42'),None,'Button','登录'),win32con.BM_CLICK,0,0)
-            time.sleep(3)
+            time.sleep(5)
             
             ads_handle = win32gui.FindWindow('#32770','通达信信息')
             print(ads_handle)
             win32gui.SendMessage(win32gui.FindWindow('#32770','通达信信息'),win32con.WM_CLOSE,0,0)
             
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
         
     #登录信息框
     def CloseInfoTable(self):
@@ -56,7 +83,7 @@ class TdxOperator():
             time.sleep(5)
             win32gui.PostMessage(win32gui.FindWindow('#32770','通达信信息'),win32con.WM_CLOSE,0,0)
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
 
     #条件选股 Ctrl+T
@@ -69,7 +96,7 @@ class TdxOperator():
             time.sleep(1)
             #win32gui.SendMessage(Tab_handle,0x130C,1,0)
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
     #按索引选择公式
     def Stock_option(self, index):
@@ -88,7 +115,7 @@ class TdxOperator():
             win32gui.SendMessage(gs,win32con.WM_KEYUP,0,0) 
             time.sleep(1)
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
 
    #按索引选择公式
@@ -103,7 +130,7 @@ class TdxOperator():
             win32gui.PostMessage(fawj,win32con.BM_CLICK,0,0)
             time.sleep(1)
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
     #加入条件
     def Join_condition(self):
@@ -112,7 +139,7 @@ class TdxOperator():
             win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Button','加入条件'),win32con.BM_CLICK,0,0)
             time.sleep(1)
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
     #执行选股
     def begin_select_stocks(self):
@@ -122,11 +149,18 @@ class TdxOperator():
                 print(zs)
                 print(type(zs))
                 win32gui.PostMessage(win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Button','执行选股'),win32con.BM_CLICK,0,0)
-                time.sleep(10)
+                time.sleep(1)
+
+                ensure_diagle=win32gui.FindWindowEx(win32gui.FindWindow('#32770','TdxW'),None,'Button','确定')
+                if(ensure_diagle != 0):
+                    win32gui.PostMessage(ensure_diagle ,win32con.BM_CLICK,0,0)
+
+                time.sleep(10)    
+
                 print("执行选股")
                 break
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
         
     #补数据
     def Complement_data(self):
@@ -137,22 +171,133 @@ class TdxOperator():
                 time.sleep(5)
                 print("补数据")
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
 
     #关闭选股器
     def CloseSelectStockWindows(self):
         time.sleep(5)
+        result='0/0'
         try:
             while True:
                 print("查看是否选股完成")
                 time.sleep(1)
                 if win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Static','选股完毕. ') != 0:
+                    handle = win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'), None, 'static', '选中数')
+                    numberHandle = win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'), handle, 'static', None)
+                    title = win32gui.GetWindowText(numberHandle)
+                    result = title.split('/', 1)
                     win32gui.PostMessage(win32gui.FindWindow('#32770','条件选股'),win32con.WM_CLOSE,0,0)
                     time.sleep(1)
                     print("选股完毕")
                     break
+            return int(result[0])
         except Exception as e:
-            self.webchat.warning(sys._getframe().f_code.co_name+'\t'+str(e))
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
+
+    def UpdataDataRetime(self):
+        try:
+            # zxg = win32gui.FindWindow('TdxW_MainFrame_Class','通达信金融终端V7.42 - [行情报价-自选股]')
+            # print(zxg)
+            lstjg = win32gui.FindWindow('TdxW_MainFrame_Class','通达信金融终端V7.42 - [行情报价-临时条件股]')
+            print(hex(lstjg))
+            # szzs = win32gui.FindWindow('TdxW_MainFrame_Class','通达信金融终端V7.42 - [分析图表-上证指数]')
+            # print(szzs)
+
+            p=win32gui.GetWindowRect(lstjg)
+            print(p)
+
+            Tab_handle = win32gui.FindWindowEx(lstjg, None,'#32770',None)
+            print(hex(Tab_handle))
+
+            print("lkup 菜单")
+            systemMenu = find_idxSubHandle(Tab_handle, 'AfxWnd42', 9)
+            print(hex(systemMenu))
+
+            p=win32gui.GetWindowRect(Tab_handle)
+            print(p)
+
+            #系统菜单位置
+            win32api.SetCursorPos([p[0]+34,p[1]+9])
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+
+            #盘后数据子菜单位置
+            win32api.SetCursorPos([p[0]+87,p[1]+248])
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+
+            time.sleep(1)
+            left, top, right, bottom=win32gui.GetWindowRect(win32gui.FindWindow('#32770','盘后数据下载'))
+            print(left, top, right, bottom)
+
+            #选择日线数据下载
+            # win32api.SetCursorPos([left+(213-191),top+(238-143)])
+            # time.sleep(1)
+            # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            # time.sleep(1)
+            # win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+
+
+            #沪深分钟线
+            print('沪深分钟线')
+            win32api.SetCursorPos([left+(290-191),top+(181-143)])
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+            time.sleep(1)
+
+            #选择1分钟线数据
+            print('1分钟线数据')
+            win32api.SetCursorPos([left+(214-191),top+(214-143)])
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+            time.sleep(1)
+
+            #选择5分钟线数据
+            print('5分钟线数据')
+            win32api.SetCursorPos([left+(214-191),top+(237-143)])
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN,0,0,0,0)
+            time.sleep(1)
+            win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP,0,0,0,0)
+            time.sleep(1)
+
+            phsjxz = win32gui.FindWindow('#32770','盘后数据下载')
+            print(hex(phsjxz))
+
+            begintime=datetime.datetime.now()
+            print(begintime)
+
+            #执行下载
+            ksxz = win32gui.FindWindowEx(phsjxz ,None,'Button','开始下载')
+            win32gui.PostMessage(ksxz,win32con.BM_CLICK,0,0)
+
+            
+            while True:
+                # print("查看下载是否完成")
+                time.sleep(2)
+                if win32gui.FindWindowEx(phsjxz,None,'Static','下载完毕.') != 0:
+                    win32gui.PostMessage(phsjxz,win32con.WM_CLOSE,0,0)
+                    time.sleep(1)
+                    print("下载完毕")
+                    break
+                    
+            endtime=datetime.datetime.now()
+            print(endtime)
+            print(u'盘后数据下载时间：%s'%(endtime-begintime))
+            print(u'盘后数据下载时间：%s秒'%(endtime-begintime).seconds)
+        
+        except Exception as e:
+            print(sys._getframe().f_code.co_name+'\t'+str(e))
+
+    
 
 
     def KillSelf(self):
@@ -162,10 +307,15 @@ class TdxOperator():
         except Exception as e:
             print("no Tdx: "+str(e))
 
-    def GetReadyForSelect(self):
+    def OpenTdxForReady(self):
         self.KillSelf()
         self.Open_TDX()
         self.CloseInfoTable()
+    
+    def DoUpdateRetimeData(self):
+        self.OpenTdxForReady()
+        self.UpdataDataRetime()
+        self.KillSelf()
         
     
     def DoSelectStocksNow(self, index, imageName):
@@ -174,12 +324,14 @@ class TdxOperator():
         self.Join_condition()
         self.begin_select_stocks()
         self.Complement_data()
-        self.CloseSelectStockWindows()
+        result = self.CloseSelectStockWindows()
+        return result
 
     def DoImportSelectStockCase(self, index):
         self.Ctrl_T()
         self.ImportCase()
         self.begin_select_stocks()
         self.Complement_data()
-        self.CloseSelectStockWindows()
+        result = self.CloseSelectStockWindows()
+        return result
         

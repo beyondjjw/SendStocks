@@ -25,7 +25,7 @@ class WebChatManager(Singleton):
         for group in groups:
             print(group)
 
-        group = self.bot.groups().search('欢乐A')[0]
+        group = self.bot.groups().search('欢乐gu')[0]
         print("进行自动发送选股截图！")
         print(group)
         group.send(msg)
