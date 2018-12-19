@@ -327,11 +327,11 @@ class TdxOperator():
         result = self.CloseSelectStockWindows()
         return result
 
-    def DoImportSelectStockCase(self, index):
+    def DoSelectStockByImportCase(self, index):
         self.Ctrl_T()
         self.ImportCase()
         self.begin_select_stocks()
         self.Complement_data()
         result = self.CloseSelectStockWindows()
         return result
-        
+    

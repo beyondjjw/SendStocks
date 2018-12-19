@@ -20,7 +20,7 @@ class WebChatManager(Singleton):
     def __init__(self):
         self.bot = Bot(True, False)
      
-    def send_image_to_group(self, msg, filepath):
+    def SendImageToGroup(self, msg, filepath):
         groups = self.bot.groups()
         for group in groups:
             print(group)

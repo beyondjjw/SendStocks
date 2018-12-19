@@ -156,13 +156,13 @@ KB_Code = {
     '`':0xC0
 }
 
-def key_input_key(key=''):
+def key_input_key(key='', sleepTime=0.05):
     win32api.keybd_event(KB_Code[key],0,0,0)
     win32api.keybd_event(KB_Code[key],0,win32con.KEYEVENTF_KEYUP,0)
-    time.sleep(0.05)
+    time.sleep(sleepTime)
 
-def key_input(str=''):
+def key_input(str='', sleepTime=0.05):
     for c in str:
         win32api.keybd_event(KB_Code[c],0,0,0)
         win32api.keybd_event(KB_Code[c],0,win32con.KEYEVENTF_KEYUP,0)
-        time.sleep(0.01)
+        time.sleep(sleepTime)

@@ -16,41 +16,44 @@ class POINT(Structure):
 
 def mouse_move(x,y):
     win32api.SetCursorPos([x, y])
+    time.sleep(0.05)
     
 def GetPosition():
     po = POINT()
     win32api.GetCursorPos(byref(po))
     return int(po.x), int(po.y)
 
-def Click(x=None,y=None):
+def Click(x=None,y=None,sleepTime=0.05):
     if not x is None and not y is None:
         mouse_move(x,y)
-        time.sleep(0.05)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    time.sleep(sleepTime)
     
-def DoubleClick(x=None,y=None):
+def DoubleClick(x=None,y=None, sleepTime=0.05):
     if not x is None and not y is None:
         mouse_move(x,y)
-        time.sleep(0.05)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    time.sleep(sleepTime)
 
-def ClickController(handle):
+def ClickController(handle, sleepTime=0.05):
     if (handle == 0): 
         return
     win32gui.SendMessage(handle, win32con.WM_KEYDOWN,0,0)
     win32gui.SendMessage(handle, win32con.WM_KEYUP,0,0) 
+    time.sleep(sleepTime)
 
-def DoubleClickController(handle):
+def DoubleClickController(handle, sleepTime=0.05):
     if (handle == 0): 
         return
     win32gui.SendMessage(handle, win32con.WM_KEYDOWN,0,0)
     win32gui.SendMessage(handle, win32con.WM_KEYUP,0,0) 
     win32gui.SendMessage(handle, win32con.WM_KEYDOWN,0,0)
     win32gui.SendMessage(handle, win32con.WM_KEYUP,0,0) 
+    time.sleep(sleepTime)
 
 
    

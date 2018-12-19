@@ -36,8 +36,8 @@ if __name__=='__main__':
             imageName = "C:\\code\\pic\\qianshigu.jpg"
             tdx.DoSelectStocksNow(88, 6)
             tdx.DoSelectStocksNow(92, 1)
-            Capture.window_capture(imageName)
-            # webchat.send_image_to_group(indexName, imageName)
+            Capture.WindowCapture(imageName)
+            # webchat.SendImageToGroup(indexName, imageName)
             # webchat.send_image_by_file_helper(indexName, imageName)
 
             tdx.KillSelf()

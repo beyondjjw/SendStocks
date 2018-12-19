@@ -1,5 +1,5 @@
 from PIL import ImageGrab
 
-def window_capture(filename):
+def WindowCapture(filename):
     pic = ImageGrab.grab()
     pic.save(filename)
