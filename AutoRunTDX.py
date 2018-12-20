@@ -48,13 +48,13 @@ def ShowMultiTimeWindows(number):
 
     imageName = "C:\\code\\pic\\tmp.jpg"
     Capture.WindowCapture(imageName)
-    webchat.SendImageToGroup("1分钟，5分钟，30分钟详细走势", imageName)
+    webchat.SendToGroup("1分钟，5分钟，30分钟详细走势", imageName)
 
     index = 1
     while index < number:
         KeyBoardMgr.key_input_key('page_down', Seconds.stop(3))
         Capture.WindowCapture(imageName)
-        webchat.SendImageToGroup("1分钟，5分钟，30分钟详细走势", imageName)
+        webchat.SendToGroup("1分钟，5分钟，30分钟详细走势", imageName)
         # webchat.send_image_by_file_helper("1分钟，5分钟，30分钟详细走势", imageName)
         index += 1
 
@@ -74,13 +74,13 @@ def SelectStocksByCase(index):
     msg = StockCase.GetCaseName(index)
     imageName = StockCase.GetCaseResultImagePath(index)
     print(msg, imageName)
-    result = tdx.DoSelectStockByImportCase(2)
+    result = tdx.DoSelectStockByImportCase(index)
     Capture.WindowCapture(imageName)
-    webchat.SendImageToGroup(msg, imageName)
+    webchat.SendToGroup(msg, imageName)
     # webchat.send_image_by_file_helper(msg, imageName)
     ShowMultiTimeWindows(result)
-
     tdx.KillSelf()
+    return result
 
 # def select_xiaoniaofei_gu_just_for_view():
 #     tdx = TdxOperator.TdxOperator()
@@ -90,7 +90,7 @@ def SelectStocksByCase(index):
 #     imageName = "C:\\code\\pic\\xiaoniaofei.jpg"
 #     result = tdx.DoSelectStocksNow(index, imageName)
 #     Capture.WindowCapture(imageName)
-#     # webchat.SendImageToGroup(indexName, imageName)
+#     # webchat.SendToGroup(indexName, imageName)
 #     webchat.send_image_by_file_helper(indexName, imageName)
 #     tdx.KillSelf()
 
@@ -99,22 +99,22 @@ if __name__=='__main__':
     t1 = t1 = threading.Thread(target=heart_beat,args=(u'heartbeat',))
     t1.start()
 
+    time.sleep(10)
+    webchat.SendToGroup("开始自动化选股流程，OK, I'm ready", '')
+
     while 1:
         
         if int(time.strftime("%H%M%S")) >= 93000 :
-            # select_xiaoniaofei_gu_just_for_view()
-            # time.sleep(5 * 60)
-            SelectStocksByCase(1)
-
-            time.sleep(5 * 60)
-
             tdx = TdxOperator.TdxOperator()
             tdx.DoUpdateRetimeData()
             time.sleep(1)
 
-        # elif int(time.strftime("%H%M%S")) > 130000:
-            # SelectStocksByCase()
-            # time.sleep(5 * 60)
+            result = SelectStocksByCase(1)
+            result = 0
+            if(result < 5):
+                SelectStocksByCase(2)
+
+            time.sleep(5 * 60)
 
         else:
             print("time to sleep")

@@ -11,6 +11,7 @@ import Capture
 import WebChatMgr
 import os
 import threading
+import Tdx.ConditionSelectStock
 
 
 def find_idxSubHandle(pHandle, winClass, index=0):
@@ -119,7 +120,7 @@ class TdxOperator():
 
 
    #按索引选择公式
-    def ImportCase(self):
+    def ImportCase(self, index):
         try:
             #tjxg = win32gui.FindWindow('#32770','条件选股')
             yrfa = win32gui.FindWindowEx(win32gui.FindWindow('#32770','条件选股'),None,'Button','引入方案')
@@ -329,9 +330,15 @@ class TdxOperator():
 
     def DoSelectStockByImportCase(self, index):
         self.Ctrl_T()
-        self.ImportCase()
-        self.begin_select_stocks()
-        self.Complement_data()
-        result = self.CloseSelectStockWindows()
+        ssw = Tdx.ConditionSelectStock.SelectStocksWindow()
+        ssw.ImportCase(index)
+        ssw.begin_select_stocks()
+        result = ssw.GetNumberSelected()
+        ssw.CloseWindow()
+
+        # self.ImportCase(index)
+        # self.begin_select_stocks()
+        # self.Complement_data()
+        # result = self.CloseSelectStockWindows()
         return result
     

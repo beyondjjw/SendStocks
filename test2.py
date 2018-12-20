@@ -37,7 +37,7 @@ if __name__=='__main__':
             tdx.DoSelectStocksNow(88, 6)
             tdx.DoSelectStocksNow(92, 1)
             Capture.WindowCapture(imageName)
-            # webchat.SendImageToGroup(indexName, imageName)
+            # webchat.SendToGroup(indexName, imageName)
             # webchat.send_image_by_file_helper(indexName, imageName)
 
             tdx.KillSelf()

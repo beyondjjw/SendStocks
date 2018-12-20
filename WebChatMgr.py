@@ -20,16 +20,15 @@ class WebChatManager(Singleton):
     def __init__(self):
         self.bot = Bot(True, False)
      
-    def SendImageToGroup(self, msg, filepath):
+    def SendToGroup(self, msg, filepath='', groupName='A欢乐'):
         groups = self.bot.groups()
         for group in groups:
             print(group)
 
-        group = self.bot.groups().search('欢乐gu')[0]
-        print("进行自动发送选股截图！")
-        print(group)
+        group = self.bot.groups().search(groupName)[0]
         group.send(msg)
-        group.send_image(filepath)
+        if(filepath != ''):
+            group.send_image(filepath)
     
     def send_image_by_file_helper(self, msg, filepath):
         self.bot.file_helper.send(msg)
