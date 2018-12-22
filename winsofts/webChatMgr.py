@@ -1,6 +1,7 @@
 from wxpy import *
 import time
 import threading
+
 class Singleton(object):
     _instance_lock = threading.Lock()
 
@@ -38,8 +39,9 @@ class WebChatManager(Singleton):
         self.bot.file_helper.send(time.strftime("%H:%M:%S") + msg)
 
     def send_heartbeat(self):
+        self.bot.file_helper.send("开始自动化选股流程，OK, I'm ready", '')
         while 1:
-            time.sleep(63)
+            time.sleep(30)
             try:
                 self.bot.file_helper.send("heartbeat "+ time.strftime("%H:%M:%S"))
             except Exception as e:

@@ -23,9 +23,16 @@ def GetPosition():
     win32api.GetCursorPos(byref(po))
     return int(po.x), int(po.y)
 
-def Click(x=None,y=None,sleepTime=0.05):
+def Click(x=None,y=None,sleepTime=0.5):
     if not x is None and not y is None:
         mouse_move(x,y)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
+    win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
+    time.sleep(sleepTime)
+
+def ClickPos(pos, sleepTime=0.5):
+    if not pos[0] is None and not pos[1] is None:
+        mouse_move(pos[0],pos[1])
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
     time.sleep(sleepTime)
@@ -44,6 +51,12 @@ def ClickController(handle, sleepTime=0.05):
         return
     win32gui.SendMessage(handle, win32con.WM_KEYDOWN,0,0)
     win32gui.SendMessage(handle, win32con.WM_KEYUP,0,0) 
+    time.sleep(sleepTime)
+
+def ClickButton(parent, name, sleepTime=0.5):
+    button = win32gui.FindWindowEx(parent ,None,'Button', name)
+    if button != 0:
+        win32gui.PostMessage(button,win32con.BM_CLICK,0,0)
     time.sleep(sleepTime)
 
 def DoubleClickController(handle, sleepTime=0.05):
