@@ -24,7 +24,7 @@ class TdxOperator():
     def __init__(self):
         self.imagePath='C:\\pic\\'
         self.handle = 0
-
+    
     def OpenTdx(self):
         self.handle = loginWin.LoginWin().TdxLogin()
 

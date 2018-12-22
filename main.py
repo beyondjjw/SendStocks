@@ -55,13 +55,19 @@ if __name__=='__main__':
             time.sleep(1)
 
             caseIndex = 1
-            result = tdx.DoSelectStocksNow(caseIndex)
-            stocksWin = stockListWin.StockListWin()
-            images = []
-            images = tdx.CaptureStocksDrawings(result, stocksWin)
-            SendStocksInfo(CaseInfo[caseIndex], images)
-            if(result < 5):
-                tdx.DoSelectStocksNow(2)
+            result = 0
+
+            while result <= 3 and caseIndex <= 2:
+                result = tdx.DoSelectStocksNow(caseIndex)
+                stocksWin = stockListWin.StockListWin()
+                images = []
+                images = tdx.CaptureStocksDrawings(result, stocksWin)
+                # SendStocksInfo(CaseInfo[caseIndex], images)
+                if result <= 3:
+                    caseIndex = 2
+                else:
+                    break
+            
 
             time.sleep(5*60)
 
