@@ -21,7 +21,7 @@ class WebChatManager(Singleton):
     def __init__(self):
         self.bot = Bot(True, False)
      
-    def SendToGroup(self, msg, filepath='', groupName='A欢乐'):
+    def SendToGroup(self, msg, filepath='', groupName='A欢乐A'):
         groups = self.bot.groups()
         for group in groups:
             print(group)

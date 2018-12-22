@@ -18,6 +18,7 @@ from pc import KeyBoard
 class SelectStockCaseFileWindow:
     def __init__(self):
         self.handle = win32gui.FindWindow('#32770','选择选股方案文件')
+        print('选择选股方案文件', self.handle)
 
     def GetCasePostionByIndex(self, index):
         time.sleep(0.5)
@@ -26,10 +27,11 @@ class SelectStockCaseFileWindow:
 
     def SelectCaseByIndex(self, index):
         x, y = self.GetCasePostionByIndex(index)
-        Mouse.DoubleClick(x, y, 0.05) 
+        Mouse.DoubleClick(x, y, 1) 
 
 class SelectStocksWindow:
-    def __init__(self):
+    def __init__(self, parent):
+        win32gui.ShowWindow(parent, win32con.SW_SHOWNORMAL)
         KeyBoard.inputCompositeKeys(['ctrl', 't'])
         self.handle = win32gui.FindWindow('#32770','条件选股')
         self.over = False
@@ -45,20 +47,21 @@ class SelectStocksWindow:
         return self.over            
 
     def GetNumberSelected(self):
-        result = '0/0'
+        result=''
         if(self.IsOver()):
             handle = win32gui.FindWindowEx(self.handle, None, 'static', '选中数')
             numberHandle = win32gui.FindWindowEx(self.handle, handle, 'static', None)
             title = win32gui.GetWindowText(numberHandle)
             result = title.split('/', 1)
-        return int(result[0])
+        return result[0]
 
      #按索引选择方案
     def ImportCase(self, index):
         if self.handle == 0:
             return
-        Mouse.ClickButton(self.handle, '引入方案')
+        Mouse.ClickButton(self.handle, '引入方案', 2)
         SelectStockCaseFileWindow().SelectCaseByIndex(index)
+        time.sleep(1)
 
     #执行选股
     def Do(self):
@@ -74,8 +77,10 @@ class SelectStocksWindow:
     def CloseWindow(self):   
         result = 0
         if(self.IsOver()):
-            result = self.GetNumberSelected()
-            Mouse.ClickController(self.handle)
+            result = int(self.GetNumberSelected())
+            time.sleep(1)
+            win32gui.PostMessage(self.handle, win32con.WM_CLOSE, 0, 0)
+            time.sleep(1)
         return result
                 
     def ExeSelectStocks(self, index):
@@ -83,6 +88,7 @@ class SelectStocksWindow:
         self.ImportCase(index)
         self.Do()
         if(self.IsOver()):
+            time.sleep(1)
             result = self.CloseWindow()
         return result
 

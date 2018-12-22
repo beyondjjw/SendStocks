@@ -12,6 +12,7 @@ from winsofts import webChatMgr
 from pc import pcMgr
 import threading
 from tdx import tdxOperator
+from tdx import stockListWin
 
 
 CaseInfo = {
@@ -55,8 +56,9 @@ if __name__=='__main__':
 
             caseIndex = 1
             result = tdx.DoSelectStocksNow(caseIndex)
+            stocksWin = stockListWin.StockListWin()
             images = []
-            images = tdx.CaptureStocksDrawings(result)
+            images = tdx.CaptureStocksDrawings(result, stocksWin)
             SendStocksInfo(CaseInfo[caseIndex], images)
             if(result < 5):
                 tdx.DoSelectStocksNow(2)

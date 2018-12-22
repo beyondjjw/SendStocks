@@ -48,6 +48,8 @@ class LoginWin:
                 time.sleep(10)
 
             self.CloseInfoTable()
+
+            return self.handle
             
         except Exception as e:
             print(sys._getframe().f_code.co_name+'\t'+str(e))
@@ -57,5 +59,6 @@ class LoginWin:
         info = win32gui.FindWindow('#32770','通达信信息')
         if info != 0:
             win32gui.PostMessage(info,win32con.WM_CLOSE,0,0)
+        time.sleep(2)
        
 

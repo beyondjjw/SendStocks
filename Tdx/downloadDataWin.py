@@ -55,9 +55,9 @@ class DownLoadDataAfterTradeWindow():
         try:
             self.Open()
             Mouse.ClickPos(self.GetControlPostion(u'日线和实时行情数据'), 1)
-            Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
-            Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
-            Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
+            # Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
+            # Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
+            # Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
             Mouse.ClickButton(self.handle, u'开始下载')
             
             if self.IsOver(): 

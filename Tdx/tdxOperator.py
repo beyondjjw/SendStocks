@@ -9,7 +9,7 @@ import win32ui
 import sys
 import os
 import threading
-from tdx import conditionSelectStock
+from tdx import condition
 from tdx import loginWin
 from pc import KeyBoard
 from tdx import windowMenu
@@ -23,9 +23,10 @@ from winsofts import capture
 class TdxOperator():
     def __init__(self):
         self.imagePath='C:\\pic\\'
+        self.handle = 0
 
     def OpenTdx(self):
-        loginWin.LoginWin().TdxLogin()
+        self.handle = loginWin.LoginWin().TdxLogin()
 
     def UpdataRealTimeData(self):
         downloadDataWin.DownLoadDataAfterTradeWindow().UpdataRealTimeData()
@@ -38,7 +39,7 @@ class TdxOperator():
             print("no Tdx: "+str(e))
     
     def DoSelectStocksNow(self, index=1):
-        return conditionSelectStock.SelectStocksWindow().ExeSelectStocks(index)
+        return condition.SelectStocksWindow(self.handle).ExeSelectStocks(index)
 
     def CaptureStocksDrawings(self, number=0, stocksWin=stockListWin.StockListWin()):
         pictures = []

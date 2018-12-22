@@ -53,10 +53,15 @@ def ClickController(handle, sleepTime=0.05):
     win32gui.SendMessage(handle, win32con.WM_KEYUP,0,0) 
     time.sleep(sleepTime)
 
-def ClickButton(parent, name, sleepTime=0.5):
+def ClickButton(parent, name, sleepTime=2):
+    # win32gui.ShowWindow(parent,win32con.SW_SHOWNORMAL)
     button = win32gui.FindWindowEx(parent ,None,'Button', name)
-    if button != 0:
-        win32gui.PostMessage(button,win32con.BM_CLICK,0,0)
+    while button == 0:
+        button = win32gui.FindWindowEx(parent ,None,'Button', name)
+        time.sleep(0.01)
+        
+    win32gui.PostMessage(button,win32con.BM_CLICK,0,0)
+    print('click', name)
     time.sleep(sleepTime)
 
 def DoubleClickController(handle, sleepTime=0.05):
