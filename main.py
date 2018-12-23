@@ -26,7 +26,7 @@ def heart_beat(str):
     print(str)
     chat = webChatMgr.WebChatManager()
     while 1:
-        time.sleep(30)
+        time.sleep(55)
         chat.send_heartbeat()
         if int(time.strftime("%H%M%S")) >= 150100 :
             pcMgr.ShutDown(2)
@@ -39,6 +39,23 @@ def StartTasks():
 def SendStocksInfo(msg, images):
     for image in images:
         webchat.SendToGroup(msg, image)
+
+def BeginSelectStockTask(tdx):
+    caseIndex = 1
+    result = 0
+    while result <= 3 and caseIndex <= 2:
+        result = tdx.DoSelectStocksNow(caseIndex)
+        stocksWin = stockListWin.StockListWin()
+        if result > 0:
+            tdx.AddTempStocksToSelfChoose(result)
+        images = []
+        images = tdx.CaptureStocksDrawings(result, stocksWin)
+        SendStocksInfo(CaseInfo[caseIndex], images)
+        if result <= 3:
+            caseIndex = 2
+        else:
+            break
+        tdx.SwitchToSelfChooseMainFrame()
         
 if __name__=='__main__':
     
@@ -47,30 +64,34 @@ if __name__=='__main__':
     
     while 1:
         
-        if int(time.strftime("%H%M%S")) >= 93000 :
+        if int(time.strftime("%H%M%S")) >= 92900 :
             tdx = tdxOperator.TdxOperator()
             tdx.OpenTdx()
             
-            tdx.UpdataRealTimeData()
-            time.sleep(1)
+            tdx.SwitchToSelfChooseMainFrame()
+            tdx.SyncSelfChoose()
 
-            caseIndex = 1
-            result = 0
-
-            while result <= 3 and caseIndex <= 2:
-                result = tdx.DoSelectStocksNow(caseIndex)
-                stocksWin = stockListWin.StockListWin()
-                images = []
-                images = tdx.CaptureStocksDrawings(result, stocksWin)
-                # SendStocksInfo(CaseInfo[caseIndex], images)
-                if result <= 3:
-                    caseIndex = 2
-                else:
-                    break
+            current = stockListWin.StockListWin(u'行情报价-自选股')
+            stocks = current.CountList()
+            number = len(stocks)
+            print(u'自选股数%d'%number)
             
+            images = []
+            images = tdx.CaptureStocksDrawings(number, current)
+            
+            # webchat.send_self("自选股监控")
+            webchat.SendToGroup("自选股监控")
+            i = 0
+            for image in images:
+                # webchat.send_image_by_file_helper(stocks[i], image)
+                webchat.SendToGroup(stocks[i], image)
+                i += 1
+                time.sleep(2)
+            # time.sleep(50)
 
-            time.sleep(5*60)
-
+            tdx.UpdataRealTimeData()
+            BeginSelectStockTask(tdx)       
+            # time.sleep(60)             
         else:
             print("time to sleep")
             time.sleep(2)

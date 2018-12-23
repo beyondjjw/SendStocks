@@ -21,11 +21,16 @@ class WebChatManager(Singleton):
     def __init__(self):
         self.bot = Bot(True, False)
      
-    def SendToGroup(self, msg, filepath='', groupName='A欢乐A'):
+    def SendToGroup(self, msg, filepath='', groupName='欢乐股'):
+        find = False
         groups = self.bot.groups()
         for group in groups:
             print(group)
-
+            
+        # if not find :
+        #     self.send_self('发送消息给群%s失败，请给群发消息激活'%groupName)
+        #     return
+            
         group = self.bot.groups().search(groupName)[0]
         group.send(msg)
         if(filepath != ''):

@@ -29,6 +29,9 @@ class CycleControl:
                 KeyBoard.key_input_key('up_arrow')
             i += 1
 
+    def ShowOneMinuteCycleDrawing(self):
+        Mouse.ClickPos(self.GetOneMinutePos(), 1)
+
     def ShowMultiCycle(self):
         Mouse.ClickPos(self.GetOneMinutePos())
         Mouse.ClickPos(self.GetMutiTimePos())
@@ -38,3 +41,13 @@ class CycleControl:
     def QuitMultiCycle(self):
         KeyBoard.key_input_key('esc')
         KeyBoard.key_input_key('esc')
+
+class SelfChoose:
+    def __init__(self, x, y):
+        self.parentPos = [x, y]
+        self.diff = [554, 865]
+
+    def GetSelfChooseButtonPos(self):
+        return self.parentPos[0] + self.diff[0], self.parentPos[1] + self.diff[1]
+
+   

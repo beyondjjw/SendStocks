@@ -54,7 +54,6 @@ def ClickController(handle, sleepTime=0.05):
     time.sleep(sleepTime)
 
 def ClickButton(parent, name, sleepTime=2):
-    # win32gui.ShowWindow(parent,win32con.SW_SHOWNORMAL)
     button = win32gui.FindWindowEx(parent ,None,'Button', name)
     while button == 0:
         button = win32gui.FindWindowEx(parent ,None,'Button', name)

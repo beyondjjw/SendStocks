@@ -20,21 +20,21 @@ DIFF={
 }
 
 
-class DownLoadDataAfterTradeWindow():
-    def __init__(self, currentWin=u'行情报价-临时条件股'):
-        self.curWin = currentWin
+class DownLoadDataAfterTradeWindow:
+    def __init__(self, currentWinHandle):
         self.x = 0
         self.y = 0
-        self.handle=0
+        self.handle=currentWinHandle
 
     def Open(self):
-        curWindow = stockListWin.StockListWin(self.curWin)
-        menu = windowMenu.Menus(curWindow)
+        win32gui.SetForegroundWindow(self.handle)
+        pos = win32gui.GetWindowRect(self.handle)
+        menu = windowMenu.Menus(pos[0], pos[1])
         menu.OpenWindowByMenu(u'系统', u'盘后数据下载')
         self.handle = win32gui.FindWindow('#32770','盘后数据下载')
         if self.handle != 0:
             self.x, self.y, right, bottom=win32gui.GetWindowRect(win32gui.FindWindow('#32770','盘后数据下载'))
-            print(self.x, self.y)
+            # print(self.x, self.y)
 
     def GetControlPostion(self, name):
         return self.x + DIFF[name][0], self.y + DIFF[name][1]
@@ -54,10 +54,10 @@ class DownLoadDataAfterTradeWindow():
     def UpdataRealTimeData(self):
         try:
             self.Open()
-            Mouse.ClickPos(self.GetControlPostion(u'日线和实时行情数据'), 1)
-            # Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
-            # Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
-            # Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
+            # Mouse.ClickPos(self.GetControlPostion(u'日线和实时行情数据'), 1)
+            Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
+            Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
+            Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
             Mouse.ClickButton(self.handle, u'开始下载')
             
             if self.IsOver(): 

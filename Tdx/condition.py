@@ -31,7 +31,8 @@ class SelectStockCaseFileWindow:
 
 class SelectStocksWindow:
     def __init__(self, parent):
-        win32gui.ShowWindow(parent, win32con.SW_SHOWNORMAL)
+        win32gui.SetForegroundWindow(parent)
+        time.sleep(.1)
         KeyBoard.inputCompositeKeys(['ctrl', 't'])
         self.handle = win32gui.FindWindow('#32770','条件选股')
         self.over = False

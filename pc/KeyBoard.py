@@ -167,7 +167,7 @@ def key_input(str='', sleepTime=0.05):
         win32api.keybd_event(KB_Code[c],0,win32con.KEYEVENTF_KEYUP,0)
         time.sleep(sleepTime)
 
-def inputCompositeKeys(strs, sleepTime=0.05):
+def inputCompositeKeys(strs, sleepTime=1):
     for c in strs:
         win32api.keybd_event(KB_Code[c],0,0,0)
 
