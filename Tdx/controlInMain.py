@@ -20,7 +20,7 @@ class CycleControl:
         y = self.top + 37
         return x,y
     
-    def ScaleDrawing(self, dir='small', times = 3):
+    def ScaleDrawing(self, dir='small', times = 4):
         Mouse.Click(1200, 200, 1)
         for i in range(0,times):
             if dir == 'small':

@@ -113,7 +113,6 @@ class TdxOperator():
                 tc.ShowMultiCycle()
             else:
                 center = [int(self.pos[2]/3), int(self.pos[3]/3)]
-                print(center)
                 Mouse.ClickPos(center)
                 KeyBoard.key_input_key('page_down', 2)
             

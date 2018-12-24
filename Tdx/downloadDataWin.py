@@ -12,19 +12,6 @@ from tdx import stockListWin
 from pc import Mouse
 
 
-# def show(self):
-#     # windows handlers
-#     # hwnd = self.window.handle
-#     win32gui.SetForegroundWindow (hwnd)
-#     win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0,0,0,0, win32con.SWP_NOMOVE | win32con.SWP_NOACTIVATE| win32con.SWP_NOOWNERZORDER|win32con.SWP_SHOWWINDOW)    
-#     # X11LockScreenWindow.show(self)
-    
-def hide(handle):
-    # X11LockScreenWindow.hide(self)
-    # windows handlers
-    # hwnd = self.window.handle
-    win32gui.SetWindowPos(handle, win32con.HWND_TOPMOST, 0,0,0,0,win32con.SWP_HIDEWINDOW|win32con.SWP_NOMOVE|win32con.SWP_NOSIZE|win32con.SWP_NOACTIVATE|win32con.SWP_NOOWNERZORDER)
-
 DIFF={
     u'日线数据':[(250-216),(205-168)],    
     u'日线和实时行情数据':[(240-216),(262-168)],
@@ -66,7 +53,7 @@ class DownLoadDataAfterTradeWindow:
         win32gui.PostMessage(self.handle, win32con.WM_CLOSE, 0, 0)
         time.sleep(0.05)
 
-    # 0x1，下1分钟数据线，0x2:下1分钟和5分钟线, 0x3,1分钟和5分钟都下，0x4下日线，0x7：日线，1分钟，5分钟全下
+    # 0x1，下1分钟数据线，0x2:下5分钟线, 0x3,1分钟和5分钟都下，0x4下日线，0x7：日线，1分钟，5分钟全下
     def UpdataRealTimeData(self, dataType=1):
         try:
             self.Open()

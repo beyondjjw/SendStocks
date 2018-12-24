@@ -44,7 +44,7 @@ def SendStocksInfo(msg, images):
     for key, values in  images.items():
         print("%s:%s"%(key, values))
         webchat.send_image_by_file_helper(key, values)
-        # webchat.SendToGroup(key, image)
+        # webchat.SendToGroup(key, values)
         time.sleep(0.5)
 
 def BeginSelectStockTask(tdx, caseIndex=1):
@@ -71,13 +71,15 @@ def MonitorSelfChooseStocks(tdx):
     
     images = {}
     images = tdx.CaptureStocksDrawings(number, current)
-    SendStocksInfo('自选股监控', images)
+    currentTime = time.strftime("%H:%M:%S")
+    msg = '自选股监控 %s'%currentTime
+    SendStocksInfo(msg, images)
     time.sleep(5)
         
 if __name__=='__main__':
     
     StartTasks()
-    time.sleep(5)
+    time.sleep(10)
 
     tdx = tdxOperator.TdxOperator()
     tdx.OpenTdx()
@@ -85,9 +87,6 @@ if __name__=='__main__':
     while 1:
         currentTime = int(time.strftime("%H%M%S"))
         if currentTime >= 93000 :
-
-            time.sleep(10)
-
             tdx.SwitchToSelfChooseMainFrame()
             MonitorSelfChooseStocks(tdx)
             
