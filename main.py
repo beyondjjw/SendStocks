@@ -37,66 +37,69 @@ def StartTasks():
     t1.start()
 
 def SendStocksInfo(msg, images):
-    for image in images:
-        webchat.SendToGroup(msg, image)
-        webchat.send_image_by_file_helper(msg, image)
+    # webchat.SendToGroup(msg, '')
+    webchat.send_image_by_file_helper(msg, '')
 
-def BeginSelectStockTask(tdx):
-    caseIndex = 2
-    result = 0
-    while result <= 5 and caseIndex <= 2:
-        result = tdx.DoSelectStocksNow(caseIndex)
-        stocksWin = stockListWin.StockListWin()
-        if result > 0:
-            tdx.AddTempStocksToSelfChoose(result)
-        images = []
-        images = tdx.CaptureStocksDrawings(result, stocksWin)
-        SendStocksInfo(CaseInfo[caseIndex], images)
-        if result <= 5:
-            caseIndex = 1
-        else:
-            break
-        tdx.SwitchToSelfChooseMainFrame()
+    print(msg)
+    for key, values in  images.items():
+        print("%s:%s"%(key, values))
+        webchat.send_image_by_file_helper(key, values)
+        # webchat.SendToGroup(key, image)
+        time.sleep(0.5)
+
+def BeginSelectStockTask(tdx, caseIndex=1):
+    if caseIndex < 1 or caseIndex > 2:
+        return
+
+    result = tdx.DoSelectStocksNow(caseIndex)
+    stocksWin = stockListWin.StockListWin()
+    if result > 0:
+        tdx.AddTempStocksToSelfChoose(result)
+    images = {}
+    images = tdx.CaptureStocksDrawings(result, stocksWin)
+    SendStocksInfo(CaseInfo[caseIndex], images)
+    tdx.SwitchToSelfChooseMainFrame()
+
+def MonitorSelfChooseStocks(tdx):
+    tdx.SwitchToSelfChooseMainFrame()
+    tdx.SyncSelfChoose()
+
+    current = stockListWin.StockListWin(u'行情报价-自选股')
+    stocks = current.CountList()
+    number = len(stocks)
+    print('自选股数 %d'%number)
+    
+    images = {}
+    images = tdx.CaptureStocksDrawings(number, current)
+    SendStocksInfo('自选股监控', images)
+    time.sleep(5)
         
 if __name__=='__main__':
     
     StartTasks()
-    time.sleep(10)
+    time.sleep(5)
 
     tdx = tdxOperator.TdxOperator()
     tdx.OpenTdx()
     
     while 1:
-        
-        if int(time.strftime("%H%M%S")) >= 93000 :
-            # tdx = tdxOperator.TdxOperator()
-            # tdx.OpenTdx()
+        currentTime = int(time.strftime("%H%M%S"))
+        if currentTime >= 93000 :
+
+            time.sleep(10)
+
             tdx.SwitchToSelfChooseMainFrame()
-            tdx.SyncSelfChoose()
-
-            current = stockListWin.StockListWin(u'行情报价-自选股')
-            stocks = current.CountList()
-            number = len(stocks)
-            print('自选股数 %d'%number)
+            MonitorSelfChooseStocks(tdx)
             
-            images = []
-            images = tdx.CaptureStocksDrawings(number, current)
-            
-            webchat.send_self("自选股监控")
-            webchat.SendToGroup("自选股监控")
-            i = 0
-            for image in images:
-                if ( i < number):
-                    webchat.send_image_by_file_helper(stocks[i], image)
-                    webchat.SendToGroup(stocks[i], image)
-                i += 1
-                time.sleep(0.5)
-            time.sleep(50)
-
             tdx.UpdataRealTimeData()
-            BeginSelectStockTask(tdx)       
-            time.sleep(60)  
-            tdx.SwitchToSelfChooseMainFrame()           
+            if  (currentTime > 113000 and currentTime < 130000) or (currentTime > 153000):
+                BeginSelectStockTask(tdx, 1)    
+            else:
+                BeginSelectStockTask(tdx, 2) 
+               
+            time.sleep(30)
+
+            tdx.SwitchToSelfChooseMainFrame()      
         else:
             print("time to sleep")
             time.sleep(2)

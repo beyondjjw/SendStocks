@@ -72,9 +72,21 @@ class TdxOperator():
         else:
             self.pos = [-1,-4]
 
-    def UpdataRealTimeData(self):
-        downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData()
-        
+    def UpdataRealTimeData(self, dataType=1):
+        currentTime = int(time.strftime("%H%M%S"))
+        midday = 0
+        afternoon = 0
+        if currentTime < 113000 or (currentTime > 130000 and currentTime < 150000):
+            downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x1', 16))
+        elif currentTime > 113000 and currentTime < 130000:
+            if (midday == 0):
+                downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x7', 16))
+                midday += 1  
+        else:
+            if (afternoon == 0):
+                downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x7', 16))
+                afternoon += 1
+
     def KillSelf(self):
         try:
             print(os.popen('tasklist'))
@@ -86,10 +98,10 @@ class TdxOperator():
         return condition.SelectStocksWindow(self.handle).ExeSelectStocks(index)
 
     def CaptureStocksDrawings(self, number=0, stocksWin=stockListWin.StockListWin()):
-        pictures = []
+        imageDict = {}
 
         if number <= 0:
-            return pictures
+            return imageDict
 
         left, top = stocksWin.GetWindowPos()
         tc = controlInMain.CycleControl(left, top)
@@ -104,14 +116,21 @@ class TdxOperator():
                 print(center)
                 Mouse.ClickPos(center)
                 KeyBoard.key_input_key('page_down', 2)
-
-            imageName = self.imagePath + "%d.jpg"%index
+            
+            h = win32gui.FindWindow('TdxW_MainFrame_Class', None)
+            title = win32gui.GetWindowText(h)     
+            result = title.replace(']','').split('-')
+            if len(result) !=3 :
+                name = '未知名字'
+            name=result[2]
+            
+            imageName = self.imagePath + "%s.jpg"%index
             capture.WindowCapture(imageName)
-            pictures.append(imageName)
+            imageDict[name] = imageName
             index += 1
 
         tc.QuitMultiCycle()
-        return pictures
+        return imageDict
 
     def AddTempStocksToSelfChoose(self, number):
         addToSelfChoose.PatchOperatorWindow(self.handle, number).AddAllToSelfChoose()

@@ -66,17 +66,24 @@ class DownLoadDataAfterTradeWindow:
         win32gui.PostMessage(self.handle, win32con.WM_CLOSE, 0, 0)
         time.sleep(0.05)
 
-    def UpdataRealTimeData(self):
+    # 0x1，下1分钟数据线，0x2:下1分钟和5分钟线, 0x3,1分钟和5分钟都下，0x4下日线，0x7：日线，1分钟，5分钟全下
+    def UpdataRealTimeData(self, dataType=1):
         try:
             self.Open()
-            # Mouse.ClickPos(self.GetControlPostion(u'日线和实时行情数据'), 1)
-            Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
-            Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
-            Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
-            Mouse.ClickButton(self.handle, u'开始下载')
 
-            # hide(self.handle)
-            # win32gui.SetForegroundWindow(self.parent)
+            if dataType & int('0x1', 16):
+                Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
+                Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
+            
+            if dataType & int('0x2', 16):
+                Mouse.ClickPos(self.GetControlPostion(u'沪深分钟线'))
+                Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
+
+            if dataType & int('0x4', 16):
+                Mouse.ClickPos(self.GetControlPostion(u'日线数据'))
+                Mouse.ClickPos(self.GetControlPostion(u'日线和实时行情数据'))
+
+            Mouse.ClickButton(self.handle, u'开始下载')
             
             if self.IsOver(): 
                 self.Close()

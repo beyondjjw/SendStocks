@@ -38,7 +38,8 @@ class WebChatManager(Singleton):
     
     def send_image_by_file_helper(self, msg, filepath):
         self.bot.file_helper.send(msg)
-        self.bot.file_helper.send_image(filepath)
+        if(filepath != ''):
+            self.bot.file_helper.send_image(filepath)
 
     def send_self(self, msg):
         self.bot.file_helper.send(time.strftime("%H:%M:%S") + msg)
