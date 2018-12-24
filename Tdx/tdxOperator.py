@@ -80,7 +80,7 @@ class TdxOperator():
             downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x1', 16))
         elif currentTime > 113000 and currentTime < 130000:
             if (midday == 0):
-                downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x7', 16))
+                downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData(int('0x3', 16))
                 midday += 1  
         else:
             if (afternoon == 0):
