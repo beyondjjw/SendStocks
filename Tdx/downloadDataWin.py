@@ -11,6 +11,20 @@ from tdx import windowMenu
 from tdx import stockListWin
 from pc import Mouse
 
+
+# def show(self):
+#     # windows handlers
+#     # hwnd = self.window.handle
+#     win32gui.SetForegroundWindow (hwnd)
+#     win32gui.SetWindowPos(hwnd, win32con.HWND_TOPMOST, 0,0,0,0, win32con.SWP_NOMOVE | win32con.SWP_NOACTIVATE| win32con.SWP_NOOWNERZORDER|win32con.SWP_SHOWWINDOW)    
+#     # X11LockScreenWindow.show(self)
+    
+def hide(handle):
+    # X11LockScreenWindow.hide(self)
+    # windows handlers
+    # hwnd = self.window.handle
+    win32gui.SetWindowPos(handle, win32con.HWND_TOPMOST, 0,0,0,0,win32con.SWP_HIDEWINDOW|win32con.SWP_NOMOVE|win32con.SWP_NOSIZE|win32con.SWP_NOACTIVATE|win32con.SWP_NOOWNERZORDER)
+
 DIFF={
     u'日线数据':[(250-216),(205-168)],    
     u'日线和实时行情数据':[(240-216),(262-168)],
@@ -21,14 +35,15 @@ DIFF={
 
 
 class DownLoadDataAfterTradeWindow:
-    def __init__(self, currentWinHandle):
+    def __init__(self, parent):
         self.x = 0
         self.y = 0
-        self.handle=currentWinHandle
+        self.handle=0
+        self.parent = parent
 
     def Open(self):
-        win32gui.SetForegroundWindow(self.handle)
-        pos = win32gui.GetWindowRect(self.handle)
+        win32gui.SetForegroundWindow(self.parent)
+        pos = win32gui.GetWindowRect(self.parent)
         menu = windowMenu.Menus(pos[0], pos[1])
         menu.OpenWindowByMenu(u'系统', u'盘后数据下载')
         self.handle = win32gui.FindWindow('#32770','盘后数据下载')
@@ -59,6 +74,9 @@ class DownLoadDataAfterTradeWindow:
             Mouse.ClickPos(self.GetControlPostion(u'1分钟线数据'))
             Mouse.ClickPos(self.GetControlPostion(u'5分钟线数据'))
             Mouse.ClickButton(self.handle, u'开始下载')
+
+            # hide(self.handle)
+            # win32gui.SetForegroundWindow(self.parent)
             
             if self.IsOver(): 
                 self.Close()

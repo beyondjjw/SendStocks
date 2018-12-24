@@ -75,8 +75,6 @@ class TdxOperator():
     def UpdataRealTimeData(self):
         downloadDataWin.DownLoadDataAfterTradeWindow(self.handle).UpdataRealTimeData()
         
-
-
     def KillSelf(self):
         try:
             print(os.popen('tasklist'))
@@ -98,14 +96,21 @@ class TdxOperator():
 
         for index in range(0, number):
             x, y = stocksWin.GetStockPosByIndex(index)
-            Mouse.DoubleClick(x, y, 1)  
-            tc.ShowMultiCycle()
+            if ( index == 0):
+                Mouse.DoubleClick(x, y, 1)  
+                tc.ShowMultiCycle()
+            else:
+                center = [int(self.pos[2]/3), int(self.pos[3]/3)]
+                print(center)
+                Mouse.ClickPos(center)
+                KeyBoard.key_input_key('page_down', 2)
+
             imageName = self.imagePath + "%d.jpg"%index
             capture.WindowCapture(imageName)
             pictures.append(imageName)
-            tc.QuitMultiCycle()
             index += 1
 
+        tc.QuitMultiCycle()
         return pictures
 
     def AddTempStocksToSelfChoose(self, number):

@@ -93,7 +93,7 @@ class StockListWin():
                 break
             self.Active()
             KeyBoard.key_input_key('page_down')
-            time.sleep(0.1)
+            time.sleep(0.5)
         
         print(self.stockList)
 
