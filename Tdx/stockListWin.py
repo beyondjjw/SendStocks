@@ -50,7 +50,7 @@ class StockListWin():
             self.handle = win32gui.FindWindow('TdxW_MainFrame_Class', self.classname)
         pos = self.GetWindowPos()
         x = pos[0] + 61
-        y = pos[1] + 84
+        y = pos[1] + 81
         # print(x, y)
         return x, y
 

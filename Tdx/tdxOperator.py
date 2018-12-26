@@ -9,6 +9,8 @@ import win32ui
 import sys
 import os
 import threading
+import itchat
+from winsofts import webchat
 from tdx import condition
 from tdx import loginWin
 from pc import KeyBoard
@@ -123,10 +125,12 @@ class TdxOperator():
                 name = '未知名字'
             name=result[2]
             
-            imageName = self.imagePath + "%s.jpg"%index
+            imageName = self.imagePath + "%d.jpg"%(index)
             capture.WindowCapture(imageName)
             imageDict[name] = imageName
             index += 1
+            msg = '%s %s'%(time.strftime("%H:%M:%S"), name)
+            webchat.send(msg, imageName)
 
         tc.QuitMultiCycle()
         return imageDict

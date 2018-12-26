@@ -55,9 +55,13 @@ def ClickController(handle, sleepTime=0.05):
 
 def ClickButton(parent, name, sleepTime=2):
     button = win32gui.FindWindowEx(parent ,None,'Button', name)
+    count = 0
     while button == 0:
         button = win32gui.FindWindowEx(parent ,None,'Button', name)
-        time.sleep(0.01)
+        time.sleep(0.1)
+        count += 1
+        if count == 1000: 
+            break
         
     win32gui.PostMessage(button,win32con.BM_CLICK,0,0)
     print('click', name)
