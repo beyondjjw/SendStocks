@@ -12,7 +12,6 @@ def send_msg_to_friend(msg, name='炒股小号'):
     #获取`UserName`,用于发送消息
     userName = users[0]['UserName']
     itchat.send(msg, toUserName = userName)
-    print('succeed')
 
 def send_to_group(msg, imagepath='', name='欢乐股A'):
     group  = itchat.get_chatrooms(update=True)
@@ -21,7 +20,7 @@ def send_to_group(msg, imagepath='', name='欢乐股A'):
             to_group = g['UserName']
             if msg != '':
                 itchat.send(msg, to_group)
-            # time.sleep(.5)
+            time.sleep(.1)
             if imagepath != '':
                 # itchat.send_image(imagepath, to_group)
                 itchat.send_file(imagepath, to_group)
@@ -34,6 +33,6 @@ def send_to_my_file_helper(msg, imagepath=''):
         itchat.send_image(imagepath, 'filehelper')
 
 def send(msg, imagepath=''):
-    send_to_my_file_helper(msg, imagepath)
-    # send_to_group(msg, imagepath)
+    # send_to_my_file_helper(msg, imagepath)
+    send_to_group(msg, imagepath)
    
